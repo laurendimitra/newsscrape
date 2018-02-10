@@ -22,14 +22,14 @@ app.use(express.static("public"));
 // By default mongoose uses callbacks for async queries, we're setting it to use promises (.then syntax) instead
 // Connect to the Mongo DB
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/week18Populater", {
+mongoose.connect("mongodb://localhost/nytscrapeDB", {
   useMongoClient: true
 });
 // Routes
 // A GET route for scraping the echojs website
 app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with request
-  axios.get("http://www.echojs.com/").then(function(response) {
+  axios.get("https://www.nytimes.com/").then(function(response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
     // Now, we grab every h2 within an article tag, and do the following:
@@ -48,6 +48,7 @@ app.get("/scrape", function(req, res) {
         .then(function(dbArticle) {
           // View the added result in the console
           console.log(dbArticle);
+
         })
         .catch(function(err) {
           // If an error occurred, send it to the client
@@ -55,7 +56,8 @@ app.get("/scrape", function(req, res) {
         });
     });
     // If we were able to successfully scrape and save an Article, send a message to the client
-    res.send("Scrape Complete");
+    alert("Scrape Complete");
+
   });
 });
 // Route for getting all Articles from the db
